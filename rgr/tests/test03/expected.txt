@@ -1,0 +1,47 @@
+<signal-program>
+..<program>
+....PROGRAM  401
+....<procedure-identifier>
+......<identifier>
+........TEST3  1001
+....;  401
+....<block>
+......<variable-declarations>
+........VAR  404
+........<declaration-list>
+..........<declaration>
+............<variable_identifier>
+..............<identifier>
+................Y  1002
+............:  58
+............INTEGER  405
+............;  405
+..........<declaration-list>
+............<declaration>
+..............<variable_identifier>
+................<identifier>
+..................LOL  1003
+..............:  58
+..............INTEGER  405
+..............;  405
+............<declaration-list>
+..............<declaration>
+................<variable_identifier>
+..................<identifier>
+....................KEK  1004
+................:  58
+................INTEGER  405
+................;  405
+..............<declaration-list>
+................<empty>
+......BEGIN  402
+......<statements_list>
+........<statement>
+..........<variable_identifier>
+............<identifier>
+..............Y  1002
+Syntax-analyzer! ERROR! ':=' not found in statement at row:6col:6
+........<statements_list>
+..........<empty>
+Syntax-analyzer! ERROR! 'END' identifier not found  at row:6col:6
+Syntax-analyzer! ERROR! '.' not found at row:6col:6

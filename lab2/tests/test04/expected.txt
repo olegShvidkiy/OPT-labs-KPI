@@ -1,0 +1,10 @@
+Syntax-analyzer! ERROR! Unexpected end of file
+push rbp
+mov rbp, rsp
+
+mov DWORD PTR[rbp - 4], 0
+
+
+pop rbp
+ret
+

@@ -1,0 +1,59 @@
+push rbp
+mov rbp, rsp
+
+mov DWORD PTR[rbp - 4], 0
+mov DWORD PTR[rbp - 8], 0
+
+
+mov ecx, DWORD PTR[rbp - 4]
+add ecx, DWORD PTR[rbp - 8]
+mov edx, ecx
+sub edx, 2
+mov DWORD PTR[rbp - 4], edx
+
+mov ecx, 1
+add ecx, 2
+mov edx, ecx
+mov ecx, 2
+sub ecx, 3
+mov ebx, ecx
+imul edx, ebx
+mov DWORD PTR[rbp - 4], edx
+
+mov eax, 2
+imul eax, 3
+imul eax, 4
+imul eax, 5
+mov ecx, eax
+mov DWORD PTR[rbp - 4], ecx
+
+mov ecx, 2
+add ecx, 2
+add ecx, 3
+add ecx, 5
+mov DWORD PTR[rbp - 4], ecx
+
+mov ecx, 1
+add ecx, 2
+mov edx, ecx
+mov ecx, 2
+sub ecx, 3
+mov ebx, ecx
+add edx, ebx
+mov DWORD PTR[rbp - 4], edx
+
+mov ecx, 2
+add ecx, 4
+mov edx, ecx
+mov ecx, 3
+add ecx, 4
+mov ebx, ecx
+mov eax, ebx
+div edx
+mov DWORD PTR[rbp - 4], edx
+
+
+
+pop rbp
+ret
+

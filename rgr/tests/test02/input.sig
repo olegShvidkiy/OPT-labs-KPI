@@ -1,0 +1,8 @@
+PROGRAM TEST2;
+	VAR X:INTEGER;
+BEGIN
+	X:=12+2;
+	X:=3*5-5;
+	
+	((**FIE*U***d)*);
+END.

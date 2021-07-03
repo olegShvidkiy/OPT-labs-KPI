@@ -1,0 +1,12 @@
+PROGRAM TEST2;
+	VAR X:INTEGER;
+	 X:INTEGER;
+	 X:INTEGER;
+BEGIN
+	X:=12+2;
+	X:=3*5-5;
+	Z:=5+X;
+	TEST2:=2;
+	
+	(*komment*)
+END.

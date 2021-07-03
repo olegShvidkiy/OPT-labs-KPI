@@ -1,0 +1,8 @@
+PROGRAM TEST4;
+	VAR X:INTEGER;
+		TEST:INTEGER;
+BEGIN
+	(***comment**)
+	X:=(X+TEST)-(TEST-X)*(2-5);
+END.
+

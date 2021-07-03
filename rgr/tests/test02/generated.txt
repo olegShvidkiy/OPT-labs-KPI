@@ -1,0 +1,76 @@
+<signal-program>
+..<program>
+....PROGRAM  401
+....<procedure-identifier>
+......<identifier>
+........TEST2  1001
+....;  401
+....<block>
+......<variable-declarations>
+........VAR  404
+........<declaration-list>
+..........<declaration>
+............<variable_identifier>
+..............<identifier>
+................X  1002
+............:  58
+............INTEGER  405
+............;  405
+..........<declaration-list>
+............<empty>
+......BEGIN  402
+......<statements_list>
+........<statement>
+..........<variable_identifier>
+............<identifier>
+..............X  1002
+..........:=  301
+..........<expression>
+............<summand>
+..............<multiplier>
+................<unsigned-integer>
+..................12  501
+..............<multipliers-list>
+................<empty>
+............<summands-list>
+..............+  43
+..............<summand>
+................<multiplier>
+..................<unsigned-integer>
+....................2  502
+................<multipliers-list>
+..................<empty>
+..............<summands-list>
+................<empty>
+..........;  59
+........<statements_list>
+..........<statement>
+............<variable_identifier>
+..............<identifier>
+................X  1002
+............:=  301
+............<expression>
+..............<summand>
+................<multiplier>
+..................<unsigned-integer>
+....................3  503
+................<multipliers-list>
+..................*  42
+..................<multiplier>
+....................<unsigned-integer>
+......................5  504
+..............<summands-list>
+................-  45
+................<summand>
+..................<multiplier>
+....................<unsigned-integer>
+......................5  504
+..................<multipliers-list>
+....................<empty>
+................<summands-list>
+..................<empty>
+............;  59
+..........<statements_list>
+............<empty>
+Syntax-analyzer! ERROR! 'END' identifier not found  at row:7col:6
+Syntax-analyzer! ERROR! '.' not found at row:7col:6

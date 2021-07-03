@@ -1,0 +1,16 @@
+Syntax-analyzer! ERROR! ':=' not found in statement at row:6col:6
+Syntax-analyzer! ERROR! 'END' identifier not found  at row:6col:6
+Syntax-analyzer! ERROR! '.' not found at row:6col:6
+push rbp
+mov rbp, rsp
+
+mov DWORD PTR[rbp - 4], 0
+mov DWORD PTR[rbp - 8], 0
+GENERATOR: ERROR! variable TEST3 has same name as a program identifier
+
+
+
+
+pop rbp
+ret
+

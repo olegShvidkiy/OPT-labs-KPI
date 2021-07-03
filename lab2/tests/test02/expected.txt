@@ -1,0 +1,25 @@
+push rbp
+mov rbp, rsp
+
+mov DWORD PTR[rbp - 4], 0
+GENERATOR: ERROR! variable X already declarated
+GENERATOR: ERROR! variable X already declarated
+
+
+mov ecx, 12
+add ecx, 2
+mov DWORD PTR[rbp - 4], ecx
+
+mov eax, 3
+imul eax, 5
+mov ecx, eax
+sub ecx, 5
+mov DWORD PTR[rbp - 4], ecx
+
+GENERATOR: ERROR! undeclarated variable at row: 8 col: 5
+GENERATOR: ERROR! using program name in statement at row: 9 col: 5
+
+
+pop rbp
+ret
+

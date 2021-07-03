@@ -1,0 +1,348 @@
+#include "parser.h"
+int SymbolCategories[255];
+int tabulation = 4;
+
+void fillAscii() {
+	for (int i = 0; i < 255; i++) {
+
+		if (i == 35) {
+			SymbolCategories[i] = 7;
+			continue;
+		}
+
+		if (i >= 8 && i <= 13 || i == 32) {
+			SymbolCategories[i] = 0;
+			continue;
+		}
+
+		if (i >= 48 && i <= 57) {
+			SymbolCategories[i] = 1;
+			continue;
+		}
+
+		if (i >= 65 && i <= 90) {
+			SymbolCategories[i] = 2;
+			continue;
+		}
+
+		if ((i >= 40 && i <= 47) || (i >= 59 && i <= 62)) {
+			if (i == 40) { SymbolCategories[i] = 5; }
+			else { SymbolCategories[i] = 3; }
+			continue;
+		}
+
+		if (i == 58) {
+			SymbolCategories[i] = 4;
+			continue;
+		}
+
+		if ((i >= 0 && i <= 5) || i >= 91 || (i >= 62 && i <= 64) || i == 60 || (i >= 33 && i <= 39) || i == 44) {
+			SymbolCategories[i] = 6;
+			continue;
+		}
+
+	}
+	/*
+	cout << "id\t group\t symb" << endl;
+	for (int i = 0; i < 255; i++) {
+		cout << i << "| \t" << SymbolCategories[i] << "| \t" << (char)i << endl;
+	}*/
+}
+
+void showLexeme(int row, int column, string lexeme, int ascii, string inputFile) {
+
+	string tmp = "./" + inputFile + "/generated.txt";
+	fstream output;
+
+	output.open(tmp, fstream::in | fstream::out | fstream::app);
+	output << setw(10) << row << setw(5) << " " << column << setw(5) << " " << ascii << setw(5) << " " << lexeme << endl;
+	//cout << setw(10) << lexeme << setw(5) << " " << row << setw(5) << " " << column << setw(5) << " " << ascii << endl;
+	output.close();
+
+
+
+}
+void showError(string error, string inputFile) {
+	string tmp = "./" + inputFile + "/generated.txt";
+	fstream output;
+
+	output.open(tmp, fstream::in | fstream::out | fstream::app);
+	output << error << endl;
+}
+
+Parser::Parser(string inputFile) {
+	string tmp = "./" + inputFile + "/input.sig";
+	strcpy(filePath, tmp.c_str());
+	cout << filePath << endl;
+	fileName = inputFile;
+	input = ifstream(filePath);
+
+
+}
+
+void clearFile(string inputFile) {
+	string tmp = "./" + inputFile + "/generated.txt";
+	fstream output;
+	output.open(tmp, fstream::in | fstream::out | fstream::trunc);
+	output.close();
+}
+
+void Parser::parse() {
+	clearFile(fileName);
+	fillAscii();
+	int row = 1;
+	int col = 1;
+	char buff;
+
+	while (1) {
+		input.get(buff);
+		if (input.eof()) { break; }
+		switch (SymbolCategories[(int)buff])
+		{
+		case 0://������� � ������� ������������ � ��������
+		{
+			switch ((int)buff)
+			{
+			case 10: {
+				row++;
+				col = 1;
+				break;
+			}
+			case 9: {
+				col += tabulation;
+				break;
+			}
+			case 32: {
+				col++;
+				break;
+			}
+			}
+			break;
+		}
+		case 1: {//�������� ��������
+			int position = col;
+			string token;
+			do {
+
+				if (SymbolCategories[(int)buff] == 2) {
+					string error = "Lexer: ERROR! Detected letter after number in row:" + to_string(row) + " col:" + to_string(col);
+					showError(error, fileName);
+				}
+				token += buff;
+				col++;
+
+			} while (input.get(buff) && SymbolCategories[(int)buff] == 1 || SymbolCategories[(int)buff] == 2);
+
+			input.seekg(-1, ios_base::cur);
+			auto type = lexemes[token];
+
+
+			if (!type) {
+
+				lexemes[token] = unsintegers;
+				showLexeme(row, position, token, unsintegers++, fileName);
+			}
+			else {
+				showLexeme(row, position, token, type, fileName);
+			}
+
+			break;
+		}
+
+		case 2: {
+			int position = col;
+			string token;
+			do {
+				token += buff;
+				col++;
+
+			} while (input.get(buff) && SymbolCategories[(int)buff] == 1 || SymbolCategories[(int)buff] == 2);
+			input.seekg(-1, ios_base::cur);
+			auto type = lexemes[token];
+
+
+			if (!type) {//�� ������� ������������ ������� � ������, ��������� ����� � ������
+				lexemes[token] = identifiers;
+				showLexeme(row, position, token, identifiers++, fileName);
+			}
+			else {
+
+				showLexeme(row, position, token, type, fileName);
+			}
+			break;
+
+		}
+		case 3: {
+			showLexeme(row, col, string{ buff }, (int)buff, fileName);
+			col++;
+			break;
+		}
+		case 4: {
+			string token = string{ buff };
+			int position = col;
+			col++;
+			if (input.get(buff) && buff == '=') {
+				token += string{ buff };
+				col++;
+				showLexeme(row, position, token, 301, fileName);
+			}
+			else {
+				input.seekg(-1, ios_base::cur);
+
+				showLexeme(row, position, token, (int)token[0], fileName);
+			}
+
+			break;
+		}
+		case 5: {
+			col++;
+			if (input.get(buff) && buff == '*') {
+				int startComRow = row;
+				int startComCol = col;
+				col++;
+				while (1) {
+					while (input.get(buff) && buff != '*') //������ ����������� ���� �� ������ ���������
+					{
+						if (input.eof()) { showError("Lexer: ERROR! Comment on row:" + to_string(startComRow) + " col:" + to_string(startComCol) + " - unexpected end of file in unclosed comment! ", fileName); }
+
+						if ((int)buff == 10) {
+							row++;
+							col = 1;
+						}
+						else if ((int)buff == 9) { col += tabulation; }
+						else {
+							col++;
+						}
+
+					}
+					if (input.eof()) { showError("Lexer: ERROR! Comment on row:" + to_string(startComRow) + " col:" + to_string(startComCol) + " - unexpected end of file in unclosed comment! ", fileName); }
+
+					col++;//����� ���������, ��������� �� ��������
+					if (input.get(buff) && buff != ')') {
+
+						//���� �� ����������� ������, ����������� �� ���������, ��������� �� ��������� ���������, ���� � ��� �� ��������� �� ���������� ������ ����������� �� ���������
+						if (buff != '*') {
+							input.seekg(-1, ios_base::cur);
+							continue;
+						}
+						else {
+							//���� �� ���� ���������, ���������� ��������� ���������
+							col++;
+							while (input.get(buff) && buff == '*')
+							{
+								col++;
+								if (input.eof()) { showError("Lexer: ERROR! Comment on row:" + to_string(startComRow) + " col:" + to_string(startComCol) + " - unexpected end of file in unclosed comment! ", fileName); }
+							}
+							if (input.eof()) { showError("Lexer: ERROR! Comment on row:" + to_string(startComRow) + " col:" + to_string(startComCol) + " - unexpected end of file in unclosed comment! ", fileName); }
+
+							if (buff == ')') { col++; break; }//����� ���� ��������� ����� ������, end comment
+							else { input.seekg(-1, ios_base::cur);  continue; }//�� ������ - �������� ������� ����� � ������ �������
+
+
+						}
+					}
+					else {
+						col++;
+						//���� ����������� ������ ����� ���������, ��������� �����������
+						break;
+					}
+
+				}
+			}
+			else {
+				input.seekg(-1, ios_base::cur);
+				showLexeme(row, col, string{ '(' }, (int)'(', fileName);
+			}
+			break;
+		}
+		case 6: {
+			showError("Lexer: ERROR! Detected illegal symbol " + string{ buff } + " at col:" + to_string(col) + " row: " + to_string(row), fileName);
+		}
+
+
+
+
+
+
+
+
+		case 7: {
+			int position = col;
+			col++;
+			string token = string{ buff };
+			
+			if (input.get(buff) && SymbolCategories[(int)buff] == 1) {
+				do {
+					token += string{ buff };
+					col++;
+				} while (input.get(buff) && SymbolCategories[(int)buff] == 1);
+				input.seekg(-1, ios_base::cur);
+
+				if (input.get(buff) && (int)buff == 45) {
+					token += string{ buff };
+					col++;
+					if (input.get(buff) && SymbolCategories[(int)buff] == 1) {
+						do {
+							token += string{ buff };
+							col++;
+						} while (input.get(buff) && SymbolCategories[(int)buff] == 1);
+						input.seekg(-1, ios_base::cur);
+						if (input.get(buff) && (int)buff == 45) {
+							token += string{ buff };
+							col++;
+							if (input.get(buff) && SymbolCategories[(int)buff] == 1) {
+								do {
+									token += string{ buff };
+									col++;
+								} while (input.get(buff) && SymbolCategories[(int)buff] == 1);
+								input.seekg(-1, ios_base::cur);
+							}
+
+
+						}
+						else {
+							showError("Lexer: ERROR! Detected illegal symbol " + string{ buff } + " at col:" + to_string(col) + " row: " + to_string(row), fileName);
+
+						}
+					}
+					else {
+						showError("Lexer: ERROR! Detected illegal symbol " + string{ buff } + " at col:" + to_string(col) + " row: " + to_string(row), fileName);
+
+					}
+
+				}
+				else {
+					showError("Lexer: ERROR! Detected illegal symbol " + string{ buff } + " at col:" + to_string(col) + " row: " + to_string(row), fileName);
+
+				}
+
+			}
+			else {
+				showError("Lexer: ERROR! Detected illegal symbol " + string{ buff } + " at col:" + to_string(col) + " row: " + to_string(row), fileName);
+
+			}
+
+			
+
+			auto type = lexemes[token];
+
+
+			if (!type) {
+				lexemes[token] = newLexem;
+				showLexeme(row, position, token, newLexem++, fileName);
+			}else {
+
+				showLexeme(row, position, token, type, fileName);
+			}
+			
+
+		}
+
+		}
+
+
+	}
+
+
+
+}

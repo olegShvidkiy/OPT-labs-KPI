@@ -1,0 +1,9 @@
+         1     1     401     PROGRAM
+         1     9     1001     TEST4
+         1     14     59     ;
+         2     5     404     VAR
+         2     9     1002     X
+         2     10     58     :
+         2     11     405     INTEGER
+         3     1     402     BEGIN
+Lexer: ERROR! Comment on row:4 col:6 - unexpected end of file in unclosed comment! 

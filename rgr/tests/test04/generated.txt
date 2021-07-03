@@ -1,0 +1,23 @@
+<signal-program>
+..<program>
+....PROGRAM  401
+....<procedure-identifier>
+......<identifier>
+........TEST4  1001
+....;  401
+....<block>
+......<variable-declarations>
+........VAR  404
+........<declaration-list>
+..........<declaration>
+............<variable_identifier>
+..............<identifier>
+................X  1002
+............:  58
+............INTEGER  405
+............;  405
+..........<declaration-list>
+............<empty>
+......BEGIN  402
+......<statements_list>
+Syntax-analyzer! ERROR! Unexpected end of file
